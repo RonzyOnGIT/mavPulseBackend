@@ -32,11 +32,27 @@ for dept in departments:
     if "/" in deptNumTrimmed:
         deptNumTrimmed = "BSAD"
 
-    deptCourses = getCourses(deptNumTrimmed)
-    depts[dept] = deptCourses
+    # deptCourses is the array of every course for a department like CSE department
+    deptCourses = getCourses(deptNumTrimmed) 
+
+    # this will hold the courses without the extra fluff so its only '(Department and Number) (Class name)'
+    deptCoursesTrimmed = []
+
+    # go through each course from the department
+    for course in deptCourses:
+
+        # split up each course with the delimeter of '.'
+        deptCourseArr = course.split('.')
+
+        # glue back into one string the trimmed version removing fluff
+        courseTrimmed = deptCourseArr[0] + deptCourseArr[1]
+
+        deptCoursesTrimmed.append(courseTrimmed)
+
+    depts[dept] = deptCoursesTrimmed
 
 
 for key, value in depts.items():
     print(f"{key}: {value}\n")
 
-# We would return 'depts' back to the server at which point the server would also populate the database
+# We would return 'depts' back to the server at which point the server would populate database so we dont have to keep scraping cause its slow
