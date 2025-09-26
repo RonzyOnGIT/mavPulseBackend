@@ -20,7 +20,6 @@ def getDepartments():
 
     for list in li:
         ret.append(list.text)
-        limit += 1
 
     return ret
 
