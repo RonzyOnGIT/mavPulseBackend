@@ -1,6 +1,0 @@
-docker build --no-cache -t backend .
-
-docker run --rm backend
-
-# Run a single script in the backend container without keeping the container alive
-docker-compose run --rm backend .
