@@ -1,3 +1,9 @@
-docker build --no-cache -t backend .
+# MavPulse Backend
 
-docker run --rm backend
+## How to run 
+
+### Creates docker image
+`docker build -t backend .`
+
+### Run the container
+`docker run --rm backend`
