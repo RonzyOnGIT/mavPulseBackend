@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: mavpulse-backend
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: python3 courses.py
