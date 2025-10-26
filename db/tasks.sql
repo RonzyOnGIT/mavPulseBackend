@@ -33,4 +33,8 @@ CREATE TABLE events
     date TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- TO DO: 
+--      Create table for messages - message_id (determines which messages are first for local rooms), 
+--      Create table for rooms, each room having ID for what course the room is
     

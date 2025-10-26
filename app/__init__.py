@@ -7,7 +7,7 @@ def create_app(test_config = None) -> Flask:
     # create and config app
     app = Flask(__name__)
 
-    # To Do: initialize database with app
+    # To Do: initialize database with app, and check if empty or not
 
     return app
 
