@@ -46,3 +46,48 @@ def getCourses(department: str):
     
     return res
 
+# scraps events from UTA events calendar
+# it should return array of objects? 
+def getUpcomingEvents():
+
+    events = []
+    url = "https://events.uta.edu/#tabs-46950015556440-46950015565660"
+
+    # this one is for trending, but I think u can still use the same url as above and just change the id on soup.
+    # url = "https://events.uta.edu/#tabs-46950015556440-46950015561563" 
+
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # gets container that has upcoming events and other random stuff
+    eventsContainer = soup.find("div", {"id": "tabs-46950015556440-46950015565660"})
+
+    # actually gets upcoming events container
+    upcomingEventsContainer = eventsContainer.find("div", class_="em-card-group")
+
+    # set recursive to false because it was returning duplicate images for events
+    for eventDiv in upcomingEventsContainer.find_all("div", recursive=False):
+        titleContainer = eventDiv.select("h3 a")
+        titleText = titleContainer[0].text
+
+        dateText = eventDiv.find("p", {"class": "em-card_event-text"}).text
+
+        images = eventDiv.find_all("img")
+
+        for img in images:
+            newEvent = {
+                "title": titleText,
+                "date": dateText.strip(),
+                "imgSrc": img["src"]
+            }
+            
+            events.append(newEvent)
+    
+    return events
+
+
+if __name__ == "__main__":
+    res = getUpcomingEvents()
+
+    print(res)
+

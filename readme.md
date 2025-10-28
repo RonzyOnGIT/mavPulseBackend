@@ -18,3 +18,6 @@ To run venv environment: `source venv/bin/activate`
 
 To stop running: `deactivate`
 
+If you encounter issues with being unable to start up venv environment, is most likely due to
+the line ending differences in Windows and Linux
+
