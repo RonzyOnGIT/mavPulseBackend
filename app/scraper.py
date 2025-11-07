@@ -46,7 +46,7 @@ def getCourses(department: str):
     
     return res
 
-# scraps events from UTA events calendar
+# scrapes events from UTA events calendar
 # it should return array of objects? 
 def getUpcomingEvents():
 

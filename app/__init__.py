@@ -18,6 +18,7 @@ def create_app(test_config = None) -> Flask:
     except OSError:
         pass
 
+    # change secret_key later 
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, "app.db")
