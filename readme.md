@@ -12,12 +12,20 @@
 `docker-compose run --rm backend .`
 
 ## Debugging
-For quick startups for debugging, you can use venv environment for faster debugging
+you can also use venv environment
 
-To run venv environment: `source venv/bin/activate`
+1. Create virtual environment:
+`python3 -m venv venv`
 
-To stop running: `deactivate`
+2. Activate virtual environment:
+`source venv/bin/activate`
 
-If you encounter issues with being unable to start up venv environment, is most likely due to
-the line ending differences in Windows and Linux
+LINUX: Some Python packages (like `psycopg2-binary`) require system dependencies on Linux. 
+`sudo apt install libpq-dev python3-dev build-essential`
+
+3. Install project dependencies:
+`pip install -r requirements.txt`
+
+4. To stop virtual environment:
+`deactivate`
 
