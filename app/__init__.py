@@ -24,7 +24,7 @@ def create_app(test_config = None) -> Flask:
         DATABASE=os.path.join(app.instance_path, "app.db")
     )
 
-    db.init_app(app)  # Connect SQLAlchemy to the Flask app
+    # db.init_app(app)  # Connect SQLAlchemy to the Flask app
 
     # register auth blueprint to app
     app.register_blueprint(auth.bp)
