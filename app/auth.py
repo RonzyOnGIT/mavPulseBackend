@@ -1,6 +1,5 @@
 # file that will handle routes for auth like login and logout
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token
 from app.db import get_db
 from supabase_client import supabase
 
@@ -19,15 +18,16 @@ def register():
     email = data.get('email')
     password = data.get('password')
     username = data.get('username')
+    
 
     # for now assume frontend does not check for email type
-    if "@" not in emailSplit:
-        return jsonify({"error": "Missing @"})
+    if "@" not in email:
+        return jsonify({"error": "Missing @"}), 400
     
-    # emailSplit = email.split("@")
+    emailSplit = email.split("@")
     
-    # if emailSplit[1] != "@mavs.uta.edu":
-    #     return jsonify({"error": "Invalid UTA email"})
+    if emailSplit[1] != "@mavs.uta.edu":
+        return jsonify({"error": "Invalid UTA email"}), 400
     
     try:
         response = supabase.auth.sign_up({
@@ -39,7 +39,7 @@ def register():
         # successfully created user, user now needs to confirm using their email
         # frontend will then make a call in the /login endpoint to retrive token if user confirms
         if response.user:
-            return jsonify({"response": "201", "message": "please check your email to confirm your account"})
+            return jsonify({"response": "201", "message": "please check your email to confirm your account"}), 201
     
     except Exception as e:
         return jsonify({"response": "500", "error": str(e)})
