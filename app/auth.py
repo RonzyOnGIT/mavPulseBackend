@@ -47,9 +47,7 @@ def register():
             
             user_id = response.user.id
             
-
             try:
-
                 db_response = supabase.table("users").insert({
                     "id": user_id,
                     "username": username,
@@ -68,7 +66,7 @@ def register():
                 return jsonify(response_data), 201
             
             except Exception as exception:
-                return jsonify({"response": "500", "error": str(e)}), 500
+                return jsonify({"response": "500", "error": str(exception)}), 500
 
         # if response.user:
         #     return jsonify({"response": "201", "message": "please check your email to confirm your account"}), 201
@@ -76,7 +74,6 @@ def register():
     except Exception as e:
         return jsonify({"response": "500", "error": str(e)}), 500
     
-
 
 
 @bp.route('/login', methods=['GET'])
@@ -96,4 +93,5 @@ def login():
             return jsonify({"response": "200", "acessToken": response.session.access_token})
     except Exception as e:
         return jsonify({"response": "500", "error": str(e)})
-
+    
+# need a third endpoint for refreshting access_tokens using refresh_token
