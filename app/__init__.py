@@ -19,10 +19,10 @@ def create_app(test_config = None) -> Flask:
         pass
 
     # change secret_key later 
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, "app.db")
-    )
+    # app.config.from_mapping(
+    #     SECRET_KEY='dev',
+    #     DATABASE=os.path.join(app.instance_path, "app.db")
+    # )
 
     # db.init_app(app)  # Connect SQLAlchemy to the Flask app
 
