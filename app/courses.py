@@ -2,6 +2,7 @@
 
 from scraper import getDepartments
 from scraper import getCourses
+from supabase_client import supabase
 
 
 depts = {}
@@ -47,6 +48,7 @@ for dept in departments:
         # glue back into one string the trimmed version removing fluff
         courseTrimmed = deptCourseArr[0] + deptCourseArr[1]
 
+        # insert course into supabase table here ((I think(笑))
         deptCoursesTrimmed.append(courseTrimmed)
 
     depts[dept] = deptCoursesTrimmed
@@ -54,5 +56,3 @@ for dept in departments:
 
 for key, value in depts.items():
     print(f"{key}: {value}\n")
-
-# We would return 'depts' back to the server at which point the server would populate database so we dont have to keep scraping cause its slow

@@ -81,6 +81,7 @@ def getUpcomingEvents():
                 "imgSrc": img["src"]
             }
             
+            # insert into events table here (I think(笑))
             events.append(newEvent)
     
     return events
