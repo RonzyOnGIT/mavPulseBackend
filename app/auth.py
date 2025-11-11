@@ -49,11 +49,10 @@ def register():
             
             try:
                 db_response = supabase.table("users").insert({
-                    "id": user_id,
+                    "user_id": user_id,
                     "username": username,
                     "email": email,
                 }).execute()
-
 
                 response_data = {
                     "message": "user successfully created!",
@@ -74,7 +73,7 @@ def register():
     except Exception as e:
         return jsonify({"response": "500", "error": str(e)}), 500
     
-
+    
 
 @bp.route('/login', methods=['GET'])
 def login():

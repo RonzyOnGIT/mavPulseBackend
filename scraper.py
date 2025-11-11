@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+from supabase_client import supabase
 
 # fetches all of the departments like 'Computer Science and Engineering (CSE)'
 def getDepartments():
@@ -51,10 +52,9 @@ def getCourses(department: str):
 def getUpcomingEvents():
 
     events = []
-    url = "https://events.uta.edu/#tabs-46950015556440-46950015565660"
 
-    # this one is for trending, but I think u can still use the same url as above and just change the id on soup.
-    # url = "https://events.uta.edu/#tabs-46950015556440-46950015561563" 
+    # this one is for upcoming, but I think u can still use the same url as above and just change the id on soup.
+    url = "https://events.uta.edu/#tabs-46950015556440-46950015565660"
 
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')

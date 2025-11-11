@@ -1,7 +1,6 @@
 # This file is responsible for making calls to the scraper, and clean up data so that the server can get data to server to database and client
 
-from scraper import getDepartments
-from scraper import getCourses
+from scraper import getDepartments, getCourses
 from supabase_client import supabase
 
 
@@ -15,7 +14,7 @@ departments = getDepartments()
 counter = 0
 for dept in departments:
     depts[dept] = None
-    counter += 1
+
 
 
 # loop through each department and add every class for each department to the corresponding department
