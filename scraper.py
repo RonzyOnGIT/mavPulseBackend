@@ -40,11 +40,10 @@ def getCourses(department: str):
     soup = BeautifulSoup(response.text, "html.parser")
 
     courseDivs = soup.select("div.courses div p.courseblocktitle")
-
     for course in courseDivs:
         # in the HTML non breaking space, so replace it with " "
         res.append(course.get_text().replace("\xa0", " ").strip())
-    
+
     return res
 
 # scrapes events from UTA events calendar

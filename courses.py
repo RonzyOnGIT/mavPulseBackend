@@ -11,10 +11,8 @@ departments = getDepartments()
 
 # create dictionary with key values for departments and values of empty arrays
 # the values will be an array of all classes for department
-counter = 0
 for dept in departments:
     depts[dept] = None
-
 
 
 # loop through each department and add every class for each department to the corresponding department
@@ -53,5 +51,20 @@ for dept in departments:
     depts[dept] = deptCoursesTrimmed
 
 
+# populate database with courses scraped
 for key, value in depts.items():
-    print(f"{key}: {value}\n")
+
+    department = key.split('(')
+    departmentTrimmed = department[:-1]
+
+    for course in depts[key]:
+
+        try:
+            db_response = supabase.table("courses").insert({
+                "department": departmentTrimmed,
+                "course_name": course
+            }).execute()
+
+        except Exception as e:
+            print(e)
+
