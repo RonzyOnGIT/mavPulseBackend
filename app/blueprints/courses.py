@@ -30,5 +30,40 @@ def index():
 
     except Exception as exception:
         return jsonify({"response": "500", "error": exception}), 500
+
+
+# endpoint to return all courses for a department
+@bp.route('/<string:department>', methods=['GET'])
+def getCourses(department):
+
+    limit = request.args.get('limit', type=int)
+    offset = request.args.get('offset', type=int)
+
+    try:
+        coursesQuery = supabase.table("courses").select("*").ilike("department", department + " ")
+
+        if limit is not None and offset is not None:
+            coursesQuery = coursesQuery.range(offset, offset + limit - 1)
+        elif limit:
+            coursesQuery = coursesQuery.limit(limit)
+
+        coursesResponse = coursesQuery.execute()
+
+        modifiedCourses = []
+
+        # change format to array of objects: {"course_code": "ACCT 101", "course_name": "Introduction to Accounting"}
+        for course in coursesResponse.data:
+            course_code_arr = course["course_name"].split(" ")
+            course_code = course_code_arr[0] + " " + course_code_arr[1]
+            course_name_arr = course_code_arr[3:]
+            course_name = " ".join(course_name_arr)
+
+            newCourse = {"course_code": course_code, "course_name": course_name}
+            modifiedCourses.append(newCourse)
+
+        return jsonify(modifiedCourses), 200
+
+    except Exception as exception:
+        return jsonify({"response": "500", "error": str(exception)}), 500
     
 
