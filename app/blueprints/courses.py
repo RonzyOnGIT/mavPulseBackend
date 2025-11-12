@@ -72,12 +72,21 @@ def getCourses(department):
 
         # change format to array of objects: {"course_code": "ACCT 101", "course_name": "Introduction to Accounting"}
         for course in coursesResponse.data:
+            print(course["course_name"])
             course_code_arr = course["course_name"].split(" ")
             course_code = course_code_arr[0] + " " + course_code_arr[1]
             course_name_arr = course_code_arr[3:]
             course_name = " ".join(course_name_arr)
 
-            newCourse = {"course_code": course_code, "course_name": course_name}
+            # course_name is made for frontend, course_name_backend
+            # course_name_backend is how course name is stored in database as is
+            # frontend will pass in course_name_backend to any future calls when referring to a course
+            newCourse = {
+                "course_code": course_code,
+                "course_name": course_name,
+                "course_name_backend": course["course_name"]
+            }
+
             modifiedCourses.append(newCourse)
 
         return jsonify(modifiedCourses), 200
