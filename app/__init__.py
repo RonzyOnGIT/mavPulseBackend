@@ -1,7 +1,7 @@
 # application factory
 from flask import Flask
 from . import auth
-from . import db
+from .blueprints.courses import bp as courses_bp
 import os
 
 # application factory function
@@ -24,12 +24,10 @@ def create_app(test_config = None) -> Flask:
     #     DATABASE=os.path.join(app.instance_path, "app.db")
     # )
 
-    # db.init_app(app)  # Connect SQLAlchemy to the Flask app
-
     # register auth blueprint to app
     app.register_blueprint(auth.bp)
+    app.register_blueprint(courses_bp)
 
-    # To Do: initialize database with app, and check if empty or not
     return app
 
 

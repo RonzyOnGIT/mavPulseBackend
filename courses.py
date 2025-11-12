@@ -14,7 +14,6 @@ departments = getDepartments()
 for dept in departments:
     depts[dept] = None
 
-
 # loop through each department and add every class for each department to the corresponding department
 for dept in departments:
 
@@ -45,7 +44,6 @@ for dept in departments:
         # glue back into one string the trimmed version removing fluff
         courseTrimmed = deptCourseArr[0] + deptCourseArr[1]
 
-        # insert course into supabase table here ((I think(笑))
         deptCoursesTrimmed.append(courseTrimmed)
 
     depts[dept] = deptCoursesTrimmed
@@ -57,14 +55,23 @@ for key, value in depts.items():
     department = key.split('(')
     departmentTrimmed = department[:-1]
 
+    try:
+        db_response = supabase.table("departments").insert({
+            "department": departmentTrimmed[0],
+        }).execute()
+
+    except Exception as e:
+        print(e)
+
     for course in depts[key]:
+        departmentCode = course.split(" ") 
 
         try:
             db_response = supabase.table("courses").insert({
-                "department": departmentTrimmed,
-                "course_name": course
+                "department": departmentTrimmed[0],
+                "course_name": course,
+                "department_code": departmentCode[0]
             }).execute()
 
         except Exception as e:
             print(e)
-
