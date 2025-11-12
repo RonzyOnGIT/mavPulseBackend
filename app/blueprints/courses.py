@@ -1,12 +1,24 @@
 from flask import Blueprint, request, jsonify
 from supabase_client import supabase
+from ..auth import verify_token
 
 bp = Blueprint('courses', __name__, url_prefix='/courses')
-
 
 # returns departments
 @bp.route('/', methods=['GET'])
 def index():
+    # frontend passes this in their headers
+    # "Authorization": "Bearer " + access_token
+
+    # Get token from Authorization header
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
+
+    # for debugging purposes, even if no/invalid token is passed, still return data
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
 
     # how many departments to return
     limit = request.args.get('limit', type=int)
@@ -15,7 +27,6 @@ def index():
     offset = request.args.get('offset', type=int)
 
     try:
-
         departmentsQuery = supabase.table("departments").select("*")
 
         if limit is not None and offset is not None:
@@ -35,6 +46,14 @@ def index():
 # endpoint to return all courses for a department
 @bp.route('/<string:department>', methods=['GET'])
 def getCourses(department):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
+
+    # for debugging purposes, even if no/invalid token is passed, still return data
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
 
     limit = request.args.get('limit', type=int)
     offset = request.args.get('offset', type=int)

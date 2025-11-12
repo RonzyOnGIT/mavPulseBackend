@@ -94,3 +94,17 @@ def login():
         return jsonify({"response": "500", "error": str(e)})
     
 # need a third endpoint for refreshting access_tokens using refresh_token
+
+def verify_token(access_token):
+    
+    if not access_token:
+        # no access token passed in
+        return False
+    
+    user = supabase.auth.get_user(access_token)
+
+    if not user.user:
+        # invalid token
+        return False
+
+    return True    
