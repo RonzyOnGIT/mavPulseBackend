@@ -33,7 +33,8 @@ def getRooms(course_name_backend):
             new_room = {
                 "owner": owner_name,
                 "room_name": room_name,
-                "members": room["size"]
+                "members": room["size"],
+                "room_id": room["id"]
             }
 
             rooms.append(new_room)
@@ -42,4 +43,25 @@ def getRooms(course_name_backend):
 
     except Exception as exception:
         return jsonify({"response": "500", "error": str(exception)}), 500
+
+# need to get room id because room name can be duplicates
+# @bp.route('/<string:room_id', methods=["GET"])
+# def getChat(room_id):
+
+#     auth_header = request.headers.get("Authorization", "")
+#     token = auth_header.replace("Bearer ", "")
+
+#     if verify_token(token):
+#         print("success, will allow for endpoint")
+#     else:
+#         print("do not return data")
+
+#     # Get limit from query params, default to 50
+#     limit = request.args.get("limit", type=int)
+#     offset = request.args.get("offset", type=int)
+
+#     # have chatgpt explain this
+#     messages_query = supabase.table("messages").select("*").eq("room_id", room_id).order("created_at", desc=True).limit(limit).execute()
+#     messages = list(reversed(messages_query.data))
+#     return jsonify(messages)
     
