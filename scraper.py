@@ -46,7 +46,7 @@ def getCourses(department: str):
 
     return res
 
-# scrapes events from UTA events calendar
+# scrapes events from UTA Upcoming events calendar
 # it should return array of objects? 
 def getUpcomingEvents():
 
@@ -85,9 +85,46 @@ def getUpcomingEvents():
     
     return events
 
+# scrapes trending events from UTA events calendar
+def getTrendingEvents():
+
+    events = []
+
+    url = "https://events.uta.edu/#tabs-46950015556440-46950015561563"
+
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # gets container that has trending events and other random stuff
+    eventsContainer = soup.find("div", {"id": "tabs-46950015556440-46950015561563"})
+
+    # actually gets trending events container
+    trendingEventsContainer = eventsContainer.find("div", class_="em-card-group")
+
+    # set recursive to false because it was returning duplicate images for events
+    for eventDiv in trendingEventsContainer.find_all("div", recursive=False):
+        titleContainer = eventDiv.select("h3 a")
+        titleText = titleContainer[0].text
+
+        dateText = eventDiv.find("p", {"class": "em-card_event-text"}).text
+
+        images = eventDiv.find_all("img")
+
+        for img in images:
+            newEvent = {
+                "title": titleText,
+                "date": dateText.strip(),
+                "imgSrc": img["src"]
+            }
+            
+            # insert into events table here
+            events.append(newEvent)
+    
+    return events
+
 
 if __name__ == "__main__":
-    res = getUpcomingEvents()
+    res = getTrendingEvents()
 
     print(res)
 
