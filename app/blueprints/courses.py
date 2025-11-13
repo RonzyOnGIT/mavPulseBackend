@@ -19,6 +19,7 @@ def index():
         print("success, will allow for endpoint")
     else:
         print("do not return data")
+        # return json of no token or invalid token
 
     # how many departments to return
     limit = request.args.get('limit', type=int)
@@ -40,7 +41,7 @@ def index():
         return jsonify(departmentResponse.data)
 
     except Exception as exception:
-        return jsonify({"response": "500", "error": exception}), 500
+        return jsonify({"response": "500", "error": str(exception)}), 500
 
 
 # endpoint to return all courses for a department

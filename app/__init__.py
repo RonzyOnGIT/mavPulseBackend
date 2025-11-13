@@ -2,6 +2,7 @@
 from flask import Flask
 from . import auth
 from .blueprints.courses import bp as courses_bp
+from .blueprints.rooms import bp as rooms_bp
 import os
 
 # application factory function
@@ -24,9 +25,9 @@ def create_app(test_config = None) -> Flask:
     #     DATABASE=os.path.join(app.instance_path, "app.db")
     # )
 
-    # register auth blueprint to app
     app.register_blueprint(auth.bp)
     app.register_blueprint(courses_bp)
+    app.register_blueprint(rooms_bp)
 
     return app
 
