@@ -29,3 +29,89 @@ Some Python packages (like `psycopg2-binary`) require system dependencies on Lin
 ### 4. To stop virtual environment:
 > deactivate
 
+## Endpoints
+
+#### Base url: `https://mavpulsebackend.onrender.com`
+
+### Auth
+
+**Signup new user**
+> **POST** `/auth/signup`
+
+Body
+> {
+  "username": `"exampleuser"`,
+  "email": `"example@example.com"`,
+  "password": `"supersecret"`
+}
+
+**Return Values**
+
+Success
+> response_data = {
+            "message": "user successfully created!",
+            "access_token": access_token,
+            "expires_at": expires_at,
+            "expires_in": expires_in,
+            "refresh_token": refresh_token,
+}
+
+**Login user**
+> **POST** `/login`
+
+#### Parameters
+**Body**
+>  {
+    "email": `"example@example.com"`,
+    "password": `"password"`
+}
+
+**Return Values**
+
+Success
+> {
+    "accessToken": accessToken,
+    "response": "200",
+    "username": username
+}
+
+<br>
+
+**NOTE**: Any further calls to below endpoint require `access_token` in the header.
+Every api call needs to have header field:
+note the extra space after "Bearer"
+> header: {
+    "Authorization": "Bearer " + access_token
+}
+
+
+## Courses
+
+**Returns all departments**
+> **GET** `/courses`
+
+**Return Values**
+
+On success, returns array of all departments objects
+> [ {"department": "Accounting ","id": id}, {"department": "Advertising ", "id": id} ]
+
+
+**Optional parameters**:
+`limit` - only returns requested amount
+`offset` - offset from begginning
+
+Example with `limit` and `offset`
+> **GET** `/courses?limit=3&offset=4`
+
+**Return Values**
+
+On success, would return **3** department objects skipping the first **4**
+
+
+## Rooms
+
+
+
+
+
+

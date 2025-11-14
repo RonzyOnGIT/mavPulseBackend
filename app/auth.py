@@ -75,21 +75,25 @@ def register():
     
     
 
-@bp.route('/login', methods=['GET'])
+@bp.route('/login', methods=['POST'])
 def login():
-    
     if not request.is_json:
         return jsonify({"error": "Response must be JSON"}), 400
 
     data = request.get_json()
 
-    email = data.get('email')
-    password = data.get('password')
-
     try:
-        response = supabase.auth.sin_in_with_password(email=email, password=password)
+        response = supabase.auth.sign_in_with_password(data)
         if response.session:
-            return jsonify({"response": "200", "acessToken": response.session.access_token})
+            user_id = response.user.id
+
+            user_query = supabase.table("users").select("username").eq("user_id", user_id).execute()
+            if user_query.data and len(user_query.data) > 0:
+                username = user_query.data[0]["username"]
+            else:
+                username = None
+
+            return jsonify({"response": "200", "accessToken": response.session.access_token, "username": username})
     except Exception as e:
         return jsonify({"response": "500", "error": str(e)})
     
