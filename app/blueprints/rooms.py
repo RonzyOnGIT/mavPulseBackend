@@ -45,23 +45,50 @@ def getRooms(course_name_backend):
         return jsonify({"response": "500", "error": str(exception)}), 500
 
 # need to get room id because room name can be duplicates
-# @bp.route('/<string:room_id', methods=["GET"])
-# def getChat(room_id):
+# TODO: cleanup timestamp to make frontend's job easier
+@bp.route('/chat/<string:room_id>', methods=["GET"])
+def getChat(room_id):
 
-#     auth_header = request.headers.get("Authorization", "")
-#     token = auth_header.replace("Bearer ", "")
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
 
-#     if verify_token(token):
-#         print("success, will allow for endpoint")
-#     else:
-#         print("do not return data")
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
 
-#     # Get limit from query params, default to 50
-#     limit = request.args.get("limit", type=int)
-#     offset = request.args.get("offset", type=int)
+    # Get limit from query params, default to 50
+    limit = request.args.get("limit", type=int)
+    # offset = request.args.get("offset", type=int)
 
-#     # have chatgpt explain this
-#     messages_query = supabase.table("messages").select("*").eq("room_id", room_id).order("created_at", desc=True).limit(limit).execute()
-#     messages = list(reversed(messages_query.data))
-#     return jsonify(messages)
+    # queries messages table to get all entries with specified room id
+    # returns the messages from oldest to newest
+    messages_query = supabase.table("messages").select("*").eq("room_id", room_id).order("created_at", desc=True).limit(limit).execute()
+
+    messages = []
+
+    for i in range(len(messages_query.data)):
+        retrieved_message = messages_query.data[i]
+
+        message_id = retrieved_message["message_id"]
+        sender_id = retrieved_message["sender_id"]
+        timestamp = retrieved_message["created_at"]
+        user = retrieved_message["sender_name"]
+        content = retrieved_message["content"]
+
+        new_message = {
+            "message_id": message_id,
+            "user_id": sender_id,
+            "timestamp": timestamp,
+            "username": user,
+            "content": content
+        }
+
+        messages.append(new_message)
+
+    return jsonify(messages)
+
+# TODO: endpoint for creating entry in messages table (sending message)
+
+
     
