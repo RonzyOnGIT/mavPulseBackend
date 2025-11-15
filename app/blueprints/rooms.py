@@ -88,7 +88,27 @@ def getChat(room_id):
 
     return jsonify(messages)
 
-# TODO: endpoint for creating entry in messages table (sending message)
+
+# send a message
+# @bp.route('/<string:room_id>', methods=["POST"])
+# def sendMessage(room_id):
+
+#     auth_header = request.headers.get("Authorization", "")
+#     token = auth_header.replace("Bearer ", "")
+
+#     if verify_token(token):
+#         print("success, will allow for endpoint")
+#     else:
+#         print("do not return data")
+
+    
+#     data = request.get_json()
+
+
+#     try:
+#         new_message_query = supabase.table("messages").insert().execute()
+#     except Exception as exception:
+
 
 
     

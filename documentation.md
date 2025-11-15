@@ -28,6 +28,8 @@ response_data = {
     "expires_at": expires_at,
     "expires_in": expires_in,
     "refresh_token": refresh_token,
+    "user_id": user_id,
+    "username": username
 }
 ```
 
@@ -41,7 +43,7 @@ response_data = {
 ```  
 {
     "email": `"example@example.com"`,
-    "password": `"password"`
+    "password": `"password"`,
 }
 ```
 
@@ -53,8 +55,9 @@ Success
 ``` 
 {
     "accessToken": accessToken,
+    "user_id": user_id
     "response": "200",
-    "username": username
+    "username": username,
 }
 ```
 <br>

@@ -60,6 +60,8 @@ def register():
                     "expires_at": expires_at,
                     "expires_in": expires_in,
                     "refresh_token": refresh_token,
+                    "user_id": user_id,
+                    "username": username
                 }
 
                 return jsonify(response_data), 201
@@ -74,7 +76,7 @@ def register():
         return jsonify({"response": "500", "error": str(e)}), 500
     
     
-
+# User will only ever login once refresh token expires, or they delete and reinstall
 @bp.route('/login', methods=['POST'])
 def login():
     if not request.is_json:
@@ -93,7 +95,7 @@ def login():
             else:
                 username = None
 
-            return jsonify({"response": "200", "accessToken": response.session.access_token, "username": username})
+            return jsonify({"response": "200", "accessToken": response.session.access_token, "username": username, "user_id": user_id})
     except Exception as e:
         return jsonify({"response": "500", "error": str(e)})
     
