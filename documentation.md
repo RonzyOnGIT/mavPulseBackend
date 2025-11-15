@@ -1,6 +1,6 @@
-## Endpoints Documentation
+# Endpoints Documentation
 
-#### Base url: `https://mavpulsebackend.onrender.com`
+### Base url: `https://mavpulsebackend.onrender.com`
 
 ## Auth
 
@@ -31,6 +31,7 @@ response_data = {
 }
 ```
 
+<br>
 <br>
 
 **Login user**
@@ -66,6 +67,9 @@ header: {
     "Authorization": "Bearer " + access_token
 }
 ```
+
+<br>
+<br>
 
 ## Courses
 
@@ -104,6 +108,39 @@ Example with `limit` and `offset`
 
 On success, would return **3** department objects skipping the first **4**
 
+<br>
+<br>
+
+**Returns all courses for given department**
+> **GET** `/courses{department}`
+
+<br>
+
+**Return Values**
+
+On success, returns array of all courses, in this example for Accounting (first 3).
+``` 
+[ 
+  {
+    "course_code": "ACCT 2301",
+    "course_name": "PRINCIPLES OF ACCOUNTING I",
+    "course_name_backend": "ACCT 2301  PRINCIPLES OF ACCOUNTING I"
+  },
+  {
+    "course_code": "ACCT 2302",
+    "course_name": "PRINCIPLES OF ACCOUNTING II",
+    "course_name_backend": "ACCT 2302  PRINCIPLES OF ACCOUNTING II"
+  },
+  {
+    "course_code": "ACCT 2303",
+    "course_name": "ACCOUNTING AND COMPLIANCE OF NON-PROFIT ORGANIZATIONS",
+    "course_name_backend": "ACCT 2303  ACCOUNTING AND COMPLIANCE OF NON-PROFIT ORGANIZATIONS"
+  },
+]
+```
+
+<br>
+<br>
 
 ## Rooms
 
