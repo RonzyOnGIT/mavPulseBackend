@@ -100,7 +100,6 @@ def getChat(room_id):
 #         print("success, will allow for endpoint")
 #     else:
 #         print("do not return data")
-
     
 #     data = request.get_json()
 
@@ -108,6 +107,50 @@ def getChat(room_id):
 #     try:
 #         new_message_query = supabase.table("messages").insert().execute()
 #     except Exception as exception:
+
+# work on creating a room
+# @bp.route('/rooms', methods=['POST'])
+# def createRoom():
+#     auth_header = request.headers.get("Authorization", "")
+#     token = auth_header.replace("Bearer ", "")
+
+#     if verify_token(token):
+#         print("success, will allow for endpoint")
+#     else:
+#         print("do not return data")
+
+#     if not request.is_json:
+#         return jsonify({"response": "400", "error": "Request must be JSON"}), 400
+
+#     data = request.get_json()
+
+#     # also make a new entry in member_rooms passinig in stuff like that
+#     room_key_encrypted = data.get("room_key_encrypted")
+#     room_name = data.get("room_name")
+#     creator_id = data.get("owner_id")
+#     owner = data.get("owner")
+
+'''
+    user A has privat and public key. 
+    They want to create a new room so they generate some room key, ROOM_KEY_AES, which uses A's public key to encrypt
+    And a new room of id 123 is created as well as new row in room_members with key column being encrypted room key for A
+    This encrypted key is then stored in room_members table as ROOM_KEY_AES_A or something
+
+    
+    If user A wants to send a message, it encrypts their message using public ROOM_KEY_AES
+    and makes entry in messages table
+
+    User B comes along and want to join room, in order to be able to join room, B needs to know the rooms public symmetric key
+    The problem is that only user A knows it not the server or database since its encrypted
+
+    So user B would send a request to user A passing in user B's public key
+    So if user A approves user B request to join then it would take the original room key and encrypt it using B's public key
+    Then a new entry in the table is made in the room_members table with ROOM_key_AES_B
+    Now user B would go to table to get the ROOM_KEY_AES_B and using B's private key decrypt it to get original room key
+    Now user B can user this key to encrypt messages to room and stuff like that
+
+'''
+
 
 
 

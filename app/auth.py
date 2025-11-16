@@ -84,8 +84,15 @@ def login():
 
     data = request.get_json()
 
+    email = data.get("email")
+    password = data.get("password")
+
     try:
-        response = supabase.auth.sign_in_with_password(data)
+        response = supabase.auth.sign_in_with_password({
+            "email": email,
+            "password": password
+        })
+
         if response.session:
             user_id = response.user.id
 
