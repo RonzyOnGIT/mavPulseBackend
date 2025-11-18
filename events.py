@@ -86,10 +86,11 @@ def normalize_events(raw_events, source):
       }
 
     Supabase `events` table columns:
-      - title (text)
-      - description (text) -> we'll store the image URL & source here
-      - date (timestamptz) -> we'll pass ISO format string
-      - course_id (uuid, nullable) -> we don't have this, so set to None
+      - title (varchar)
+      - date (timestamptz)
+      - image_url (varchar, nullable)
+      - type (text, nullable) -> 'upcoming' or 'trending'
+      - course_id (uuid, nullable)
     """
     cleaned = []
 
@@ -112,18 +113,12 @@ def normalize_events(raw_events, source):
             print(f"Skipping event with unparseable date: {title} - {date_str}")
             continue
 
-        # Build description: include image URL (if any) + source tag
-        description_parts = []
-        if img_src:
-            description_parts.append(f"Image: {img_src}")
-        description_parts.append(f"Source: {source}")
-        description = " | ".join(description_parts)
-
         cleaned.append(
             {
                 "title": title,
-                "description": description,
                 "date": parsed_date,
+                "image_url": img_src if img_src else None,
+                "type": source,
                 "course_id": None,
             }
         )
