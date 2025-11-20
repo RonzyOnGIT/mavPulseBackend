@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from supabase_client import supabase
 from ..auth import verify_token
 from .user import getUserName
+import uuid
+import mimetypes
 
 
 bp = Blueprint('rooms', __name__, url_prefix='/rooms')
@@ -44,8 +46,8 @@ def getRooms(course_name_backend):
     except Exception as exception:
         return jsonify({"response": "500", "error": str(exception)}), 500
 
-# need to get room id because room name can be duplicates
 # TODO: cleanup timestamp to make frontend's job easier
+# returns chat for a room
 @bp.route('/chat/<string:room_id>', methods=["GET"])
 def getChat(room_id):
 
@@ -103,6 +105,8 @@ def getChat(room_id):
     
 #     data = request.get_json()
 
+#   update the room's size here as well
+
 
 #     try:
 #         new_message_query = supabase.table("messages").insert().execute()
@@ -129,6 +133,71 @@ def getChat(room_id):
 #     room_name = data.get("room_name")
 #     creator_id = data.get("owner_id")
 #     owner = data.get("owner")
+
+
+# upload a file inside a room
+@bp.post('/<string:room_id>/files')
+def uploadFile(room_id):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
+
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
+
+    file = request.files.get("file")
+
+    if file is None:
+        return {"error": "No file uploaded"}, 400
+
+    note_id = str(uuid.uuid4())
+    is_private = request.form.get("is_private") == "true"
+    title = request.form.get("title")
+
+    # course_name will be course_name_backend
+    course_name = request.form.get("course_name")
+    user_id = request.form.get("user_id")
+
+    if user_id:
+        user_id = user_id.strip('"')  # remove extra double quotes
+
+    # file path will be saves as UUID_file.extension
+    file_path = f"{note_id}_{file.filename}"
+
+    new_note = {
+        "note_id": note_id,
+        "is_private": is_private,
+        "title": title,
+        "file_path": file_path,
+        "course_name": course_name,
+        "user_id": user_id,
+        "room_id": room_id
+    }
+
+    file_bytes = file.read()
+
+    # this is to be able to tell supabase what type of file it is
+    content_type, _ = mimetypes.guess_type(file.filename)
+
+    upload_request = supabase.storage.from_("notes").upload(file_path, file_bytes, {"content-type": content_type})
+
+    try:
+        notes_request = supabase.table("notes").insert(new_note).execute()
+    
+        if notes_request.data:
+            return jsonify(notes_request.data), 201      
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# fetch all notes from a room
+# @bp.get('/<string:room_id>/notes')
+# def getFilesFromRoom():
+#     print('疲れた')
+
+
 
 '''
     user A has privat and public key. 

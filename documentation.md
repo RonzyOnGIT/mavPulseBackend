@@ -214,3 +214,40 @@ On success, return array of messages, ordered from newest to oldest
 `limit` - only returns requested amount
 `offset` - offset from begginning
 
+<br>
+<br>
+
+## Notes
+
+**Upload Notes**
+> **POST** `/rooms/{room_id}/files`
+
+<br>
+
+**Request Body**
+**Must use multipart/form-data, NOT JSON, max of 6MB file size**
+```  
+{
+    "is_private": boolean,
+    "title": string,
+    "file: file,
+    "course_name": course_name_backend,
+    "user_id": string,
+    "room_id": string
+}
+```
+
+<br>
+
+**Delete Notes**
+> **POST** `/courses/{course_name_backend}/file_path`
+
+**Return Values**
+
+On Success, returns success message and file is deleted of database
+
+```
+{
+    "response": "successfully deleted note"
+}
+```

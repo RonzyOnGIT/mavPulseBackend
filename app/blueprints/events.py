@@ -23,7 +23,7 @@ def index():
 
     # offset to avoid retrieving old data
     offset = request.args.get("offset", type=int)
-
+ 
     try:
         events_query = supabase.table("events").select("*")
 

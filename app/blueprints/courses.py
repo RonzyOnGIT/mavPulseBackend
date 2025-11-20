@@ -73,7 +73,6 @@ def getCourses(department):
 
         # change format to array of objects: {"course_code": "ACCT 101", "course_name": "Introduction to Accounting"}
         for course in coursesResponse.data:
-            print(course["course_name"])
             course_code_arr = course["course_name"].split(" ")
             course_code = course_code_arr[0] + " " + course_code_arr[1]
             course_name_arr = course_code_arr[3:]
@@ -96,3 +95,35 @@ def getCourses(department):
         return jsonify({"response": "500", "error": str(exception)}), 500
     
 
+# delete a file
+# just need the filename, since they should all be unique
+@bp.delete('<string:course_name_backend>/<string:file_path>')
+def deleteNote(course_name_backend, file_path):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
+
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
+
+    try:
+        del_response = supabase.storage.from_("notes").remove([file_path])
+
+        try:
+            delete_response = supabase.table("notes").delete().eq("file_path", file_path).execute()
+
+            return jsonify({"response": "successfully deleted note"}), 200
+            
+        except Exception as exception:
+            return jsonify({"error": str(exception)}), 500
+
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+# fetch all notes from all rooms in a course
+# @bp.get('/<string:course_name_backend>/files')
+# def getFilesFromCourse():
+#     print('テスト')
