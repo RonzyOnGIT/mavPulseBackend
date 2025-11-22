@@ -93,12 +93,28 @@ def getCourses(department):
 
     except Exception as exception:
         return jsonify({"response": "500", "error": str(exception)}), 500
-    
+
+
+# an endpoint to create notes in a subject like upload to Calc1 a file called "optimization.pdf"
+# this will fetch all public files in a course like Calc 1 and any files that were uploaded as public inside rooms
+# @bp.get('/<string:course_name_backend>/files')
+# def getCourseNotes(course_name_backend):
+#     auth_header = request.headers.get("Authorization", "")
+#     token = auth_header.replace("Bearer ", "")
+
+#     if verify_token(token):
+#         print("success, will allow for endpoint")
+#     else:
+#         print("do not return data")
+
+#     try:
+#         get_response = supabase.s
+#     except Exception as e:
+#         return jsonify({"error": str(e)})
 
 # delete a file
-# just need the filename, since they should all be unique
-@bp.delete('<string:course_name_backend>/<string:file_path>')
-def deleteNote(course_name_backend, file_path):
+@bp.delete('/<string:file_id>')
+def deleteNote(file_id):
     auth_header = request.headers.get("Authorization", "")
     token = auth_header.replace("Bearer ", "")
 
@@ -108,10 +124,14 @@ def deleteNote(course_name_backend, file_path):
         print("do not return data")
 
     try:
-        del_response = supabase.storage.from_("notes").remove([file_path])
-
+        table_response = supabase.table("notes").select("*").eq("note_id", file_id).execute()
+        if table_response.data:
+            bucket_path = table_response.data[0]["bucket_path"]
+            # for some reason to delete has to be an array
+            del_response = supabase.storage.from_("notes").remove([bucket_path])
+        
         try:
-            delete_response = supabase.table("notes").delete().eq("file_path", file_path).execute()
+            delete_response = supabase.table("notes").delete().eq("note_id", file_id).execute()
 
             return jsonify({"response": "successfully deleted note"}), 200
             

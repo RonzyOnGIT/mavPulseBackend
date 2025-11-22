@@ -151,6 +151,7 @@ def uploadFile(room_id):
     if file is None:
         return {"error": "No file uploaded"}, 400
 
+    BASE_URL = 'https://kknornzfiytxjuzjpdom.supabase.co/storage/v1/object/public/notes'
     note_id = str(uuid.uuid4())
     is_private = request.form.get("is_private") == "true"
     title = request.form.get("title")
@@ -162,14 +163,16 @@ def uploadFile(room_id):
     if user_id:
         user_id = user_id.strip('"')  # remove extra double quotes
 
-    # file path will be saves as UUID_file.extension
+    # file path will be saves as UUID_filename.extension
     file_path = f"{note_id}_{file.filename}"
+    bucket_path = f"{note_id}_{file.filename}"
 
     new_note = {
         "note_id": note_id,
         "is_private": is_private,
         "title": title,
-        "file_path": file_path,
+        "file_path": file_path, # actual hosted path
+        "bucket_path": bucket_path, # path in bucket
         "course_name": course_name,
         "user_id": user_id,
         "room_id": room_id
@@ -183,6 +186,8 @@ def uploadFile(room_id):
     upload_request = supabase.storage.from_("notes").upload(file_path, file_bytes, {"content-type": content_type})
 
     try:
+        # store in the notes table the path to the file in the bucket
+        new_note["file_path"] = f"{BASE_URL}/{file_path}"
         notes_request = supabase.table("notes").insert(new_note).execute()
     
         if notes_request.data:
@@ -193,9 +198,31 @@ def uploadFile(room_id):
 
 
 # fetch all notes from a room
-# @bp.get('/<string:room_id>/notes')
-# def getFilesFromRoom():
-#     print('疲れた')
+# @bp.get('/<string:room_id>/files')
+# def getFilesFromRoom(room_id):
+#     auth_header = request.headers.get("Authorization", "")
+#     token = auth_header.replace("Bearer ", "")
+
+#     if verify_token(token):
+#         print("success, will allow for endpoint")
+#     else:
+#         print("do not return data")
+    
+
+#     try: 
+#         files_response = supabase.table("notes").select("*").execute()
+
+#         files = []
+
+#         if files_response.data:
+#             print(files_response.data)
+#             # for file in files_response.data:
+        
+#         return jsonify("ni")
+
+            
+#     except Exception as e:
+#         return jsonify({"error": str(e)})
 
 
 
