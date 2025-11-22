@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from supabase_client import supabase
 from ..auth import verify_token
+import uuid, mimetypes
 
 bp = Blueprint('courses', __name__, url_prefix='/courses')
 
@@ -94,6 +95,65 @@ def getCourses(department):
     except Exception as exception:
         return jsonify({"response": "500", "error": str(exception)}), 500
 
+# post a public file in a specific course
+@bp.post('/<string:course_name_backend>/files')
+def uploadFile(course_name_backend):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
+
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
+
+    file = request.files.get("file")
+
+    if file is None:
+        return {"error": "No file uploaded"}, 400
+
+    BASE_URL = 'https://kknornzfiytxjuzjpdom.supabase.co/storage/v1/object/public/notes'
+    note_id = str(uuid.uuid4())
+    title = request.form.get("title")
+
+    # course_name will be course_name_backend
+    course_name = request.form.get("course_name")
+    user_id = request.form.get("user_id")
+
+    if user_id:
+        user_id = user_id.strip('"')  # remove extra double quotes
+
+    # file path will be saves as UUID_filename.extension
+    file_path = f"{note_id}_{file.filename}"
+    bucket_path = f"{note_id}_{file.filename}"
+
+    new_note = {
+        "note_id": note_id,
+        "is_public": True,
+        "title": title,
+        "file_path": file_path, # actual hosted path
+        "bucket_path": bucket_path, # path in bucket
+        "course_name": course_name,
+        "user_id": user_id,
+        "room_id": None
+    }
+
+    file_bytes = file.read()
+
+    # this is to be able to tell supabase what type of file it is
+    content_type, _ = mimetypes.guess_type(file.filename)
+
+    upload_request = supabase.storage.from_("notes").upload(file_path, file_bytes, {"content-type": content_type})
+
+    try:
+        # store in the notes table the path to the file in the bucket
+        new_note["file_path"] = f"{BASE_URL}/{file_path}"
+        notes_request = supabase.table("notes").insert(new_note).execute()
+    
+        if notes_request.data:
+            return jsonify(notes_request.data), 201      
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # this will fetch all public files in a course like Calc 1 and any files that were uploaded as public inside rooms
 @bp.get('/<string:course_name_backend>/files')

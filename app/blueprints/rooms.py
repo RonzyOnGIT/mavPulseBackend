@@ -208,18 +208,13 @@ def getFilesFromRoom(room_id):
     else:
         print("do not return data")
     
-
     try: 
-        files_response = supabase.table("notes").select("*").execute()
-
-        files = []
+        files_response = supabase.table("notes").select("*").eq("room_id",).execute()
 
         if files_response.data:
-            print(files_response.data)
-            # for file in files_response.data:
-        
-        return jsonify("ni")
-
+            return jsonify(files_response.data)
+        else:
+            return jsonify([])
             
     except Exception as e:
         return jsonify({"error": str(e)})

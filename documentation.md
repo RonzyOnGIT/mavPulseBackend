@@ -219,7 +219,7 @@ On success, return array of messages, ordered from newest to oldest
 
 ## Notes
 
-**Upload Notes**
+**Upload Notes to a room**
 > **POST** `/rooms/{room_id}/files`
 
 <br>
@@ -243,21 +243,63 @@ On success, return array of messages, ordered from newest to oldest
 
 
 ```
+[
+    {
+        "bucket_path": string,
+        "course_name": string,
+        "created_at": 2025-11-22T18:07:11.756136+00:00,
+        "file_path": string,
+        "is_public": boolean,
+        "note_id": string,
+        "room_id": string,
+        "title": string,
+        "user_id": string
+    }
+]
+```
+
+`bucket_path` - you can ignore this
+`file_path` - actual path for note
+
+<br>
+<br>
+
+**Upload notes to a course**
+
+> **POST** `/courses/{course_name_backend}/files`
+
+<br>
+
+**Request Body**
+
+```
 {
-    "bucket_path": string,
     "course_name": string,
-    "created_at": 2025-11-22T18:07:11.756136+00:00,
     "file_path": string,
-    "is_public": boolean,
-    "note_id": string,
-    "room_id": string,
     "title": string,
     "user_id": string
 }
 ```
 
-`bucket_path` - you can ignore this
-`file_path` - actual path for note
+<br>
+
+**Return Values**
+
+```
+[
+    {
+        "bucket_path": string,
+        "course_name": string,
+        "created_at": "2025-11-22T21:37:49.931821+00:00",
+        "file_path": string,
+        "is_public": true,
+        "note_id": "f8811d62-10bb-451f-920e-7afe719b6fea",
+        "room_id": null,
+        "title": string,
+        "user_id": string
+    }
+]
+```
 
 <br>
 <br>
