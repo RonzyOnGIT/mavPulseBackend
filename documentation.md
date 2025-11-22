@@ -228,7 +228,7 @@ On success, return array of messages, ordered from newest to oldest
 **Must use multipart/form-data, NOT JSON, max of 6MB file size**
 ```  
 {
-    "is_private": boolean,
+    "is_public": boolean,
     "title": string,
     "file: file,
     "course_name": course_name_backend,
@@ -248,21 +248,62 @@ On success, return array of messages, ordered from newest to oldest
     "course_name": string,
     "created_at": 2025-11-22T18:07:11.756136+00:00,
     "file_path": string,
-    "is_private": boolean,
+    "is_public": boolean,
     "note_id": string,
     "room_id": string,
     "title": string,
     "user_id": string
 }
 ```
-`bucket_path` - u can ignore bucket this
+
+`bucket_path` - you can ignore this
 `file_path` - actual path for note
 
 <br>
 <br>
 
+**Get Notes from a course (includes notes submitted inside room that are public)**
+> **GET** `/courses/{course_name_backend}/files`
+
+<br>
+
+**Return Values**
+
+
+```
+[
+    {
+        "bucket_path": string,
+        "course_name": string,
+        "created_at": 2025-11-22T18:07:11.756136+00:00,
+        "file_path": string,
+        "is_public": boolean,
+        "note_id": string,
+        "room_id": string,
+        "title": string,
+        "user_id": string
+    },
+    {
+        "bucket_path": string,
+        "course_name": string,
+        "created_at": 2025-11-22T18:07:11.756136+00:00,
+        "file_path": string,
+        "is_public": boolean,
+        "note_id": string,
+        "room_id": string,
+        "title": string,
+        "user_id": string
+    },
+    ...
+]
+```
+
+
+<br>
+<br>
+
 **Delete Notes**
-> **POST** `/courses/{note_id}`
+> **DELETE** `/courses/{note_id}`
 
 **Return Values**
 

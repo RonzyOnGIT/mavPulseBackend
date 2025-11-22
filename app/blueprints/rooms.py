@@ -153,7 +153,7 @@ def uploadFile(room_id):
 
     BASE_URL = 'https://kknornzfiytxjuzjpdom.supabase.co/storage/v1/object/public/notes'
     note_id = str(uuid.uuid4())
-    is_private = request.form.get("is_private") == "true"
+    is_public = request.form.get("is_public") == "true"
     title = request.form.get("title")
 
     # course_name will be course_name_backend
@@ -169,7 +169,7 @@ def uploadFile(room_id):
 
     new_note = {
         "note_id": note_id,
-        "is_private": is_private,
+        "is_public": is_public,
         "title": title,
         "file_path": file_path, # actual hosted path
         "bucket_path": bucket_path, # path in bucket
@@ -198,31 +198,31 @@ def uploadFile(room_id):
 
 
 # fetch all notes from a room
-# @bp.get('/<string:room_id>/files')
-# def getFilesFromRoom(room_id):
-#     auth_header = request.headers.get("Authorization", "")
-#     token = auth_header.replace("Bearer ", "")
+@bp.get('/<string:room_id>/files')
+def getFilesFromRoom(room_id):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
 
-#     if verify_token(token):
-#         print("success, will allow for endpoint")
-#     else:
-#         print("do not return data")
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
     
 
-#     try: 
-#         files_response = supabase.table("notes").select("*").execute()
+    try: 
+        files_response = supabase.table("notes").select("*").execute()
 
-#         files = []
+        files = []
 
-#         if files_response.data:
-#             print(files_response.data)
-#             # for file in files_response.data:
+        if files_response.data:
+            print(files_response.data)
+            # for file in files_response.data:
         
-#         return jsonify("ni")
+        return jsonify("ni")
 
             
-#     except Exception as e:
-#         return jsonify({"error": str(e)})
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 
 

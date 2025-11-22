@@ -95,22 +95,34 @@ def getCourses(department):
         return jsonify({"response": "500", "error": str(exception)}), 500
 
 
-# an endpoint to create notes in a subject like upload to Calc1 a file called "optimization.pdf"
 # this will fetch all public files in a course like Calc 1 and any files that were uploaded as public inside rooms
-# @bp.get('/<string:course_name_backend>/files')
-# def getCourseNotes(course_name_backend):
-#     auth_header = request.headers.get("Authorization", "")
-#     token = auth_header.replace("Bearer ", "")
+@bp.get('/<string:course_name_backend>/files')
+def getCourseNotes(course_name_backend):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
 
-#     if verify_token(token):
-#         print("success, will allow for endpoint")
-#     else:
-#         print("do not return data")
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
 
-#     try:
-#         get_response = supabase.s
-#     except Exception as e:
-#         return jsonify({"error": str(e)})
+    try:
+        get_response = (
+            supabase
+            .table("notes")
+            .select("*")
+            .eq("course_name", course_name_backend)
+            .eq("is_public", True)
+            .execute()
+        )
+
+        if get_response.data:
+            return jsonify(get_response.data)
+        else:
+            return jsonify([])
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 # delete a file
 @bp.delete('/<string:file_id>')
@@ -141,9 +153,3 @@ def deleteNote(file_id):
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
-
-# fetch all notes from all rooms in a course
-# @bp.get('/<string:course_name_backend>/files')
-# def getFilesFromCourse():
-#     print('テスト')
