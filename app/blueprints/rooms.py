@@ -128,11 +128,26 @@ def getChat(room_id):
 
 #     data = request.get_json()
 
-#     # also make a new entry in member_rooms passinig in stuff like that
-#     room_key_encrypted = data.get("room_key_encrypted")
-#     room_name = data.get("room_name")
-#     creator_id = data.get("owner_id")
-#     owner = data.get("owner")
+#     course_id = data.get("course_id")
+#     creator_id = data.get("creator_id")
+#     room_name = data.get("name")
+
+#     new_room = {
+#         "course_id": course_id,
+#         "creator_id": creator_id,
+#         "room_name": room_name
+#     }
+
+#     try:
+#         post_response = supabase.table("rooms").insert(new_room).execute()
+
+#         if post_response.error:
+#             return jsonify({"error": post_response.error})
+    
+#         return jsonify(post_response.data)
+        
+#     except Exception as exception:
+#         return jsonify({"error": str(exception)})
 
 
 # upload a file inside a room

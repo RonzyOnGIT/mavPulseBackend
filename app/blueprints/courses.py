@@ -116,7 +116,7 @@ def uploadFile(course_name_backend):
     title = request.form.get("title")
 
     # course_name will be course_name_backend
-    course_name = request.form.get("course_name")
+    # course_name = request.form.get("course_name")
     user_id = request.form.get("user_id")
 
     if user_id:
@@ -132,7 +132,7 @@ def uploadFile(course_name_backend):
         "title": title,
         "file_path": file_path, # actual hosted path
         "bucket_path": bucket_path, # path in bucket
-        "course_name": course_name,
+        "course_name": course_name_backend,
         "user_id": user_id,
         "room_id": None
     }
