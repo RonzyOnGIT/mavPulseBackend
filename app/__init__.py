@@ -4,6 +4,7 @@ from . import auth
 from .blueprints.courses import bp as courses_bp
 from .blueprints.rooms import bp as rooms_bp
 from .blueprints.events import bp as events_bp
+from .blueprints.user import bp as user_bp
 import os
 
 # application factory function
@@ -30,6 +31,7 @@ def create_app(test_config = None) -> Flask:
     app.register_blueprint(courses_bp)
     app.register_blueprint(rooms_bp)
     app.register_blueprint(events_bp)
+    app.register_blueprint(user_bp)
 
     return app
 

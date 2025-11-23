@@ -392,3 +392,35 @@ On Success, returns success message and file is deleted of database
     "response": "successfully deleted note"
 }
 ```
+
+<br>
+<br>
+
+## Notes
+
+<br>
+
+**Get all notes that user has uploaded**
+
+> **GET** `/user/notes/{user_id}`
+
+<br>
+
+**Return Values**
+Returns array of objects
+```
+[
+    {
+        "bucket_path": string,
+        "course_name": string,
+        "created_at": "2025-11-22T20:25:47.733712+00:00",
+        "file_path": string,
+        "is_public": boolean,
+        "note_id": string,
+        "room_id": string,
+        "title": string,
+        "user_id": string
+    },
+    ...
+]
+```
