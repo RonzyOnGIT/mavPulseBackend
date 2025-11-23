@@ -180,6 +180,42 @@ On success, returns an array of room objects
 `offset` - offset from begginning
 
 <br>
+<br>
+
+**Create chat room**
+> **POST** `/rooms/new_room`
+
+<br>
+
+**Request Body**
+
+```  
+{
+    "course_id": string,
+    "creator_id": string,
+    "name": string
+}
+```
+
+<br>
+
+**Return Values**
+Returns object with `id` as the room_id, and size of 1
+
+```  
+{
+    "course_id": string,
+    "created_at": string,
+    "creator_id": string,
+    "id": string,
+    "room_name": string,
+    "size": 1
+}
+```
+
+
+<br>
+<br>
 
 **Get chat from a room**
 > **GET** `/rooms/chat/{room_id}`

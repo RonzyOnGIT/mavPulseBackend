@@ -113,41 +113,42 @@ def getChat(room_id):
 #     except Exception as exception:
 
 # work on creating a room
-# @bp.route('/rooms', methods=['POST'])
-# def createRoom():
-#     auth_header = request.headers.get("Authorization", "")
-#     token = auth_header.replace("Bearer ", "")
+@bp.route('/new_room', methods=['POST'])
+def createRoom():
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
 
-#     if verify_token(token):
-#         print("success, will allow for endpoint")
-#     else:
-#         print("do not return data")
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
 
-#     if not request.is_json:
-#         return jsonify({"response": "400", "error": "Request must be JSON"}), 400
+    if not request.is_json:
+        return jsonify({"response": "400", "error": "Request must be JSON"}), 400
 
-#     data = request.get_json()
+    data = request.get_json()
 
-#     course_id = data.get("course_id")
-#     creator_id = data.get("creator_id")
-#     room_name = data.get("name")
+    course_id = data.get("course_id")
+    creator_id = data.get("creator_id")
+    room_name = data.get("name")
 
-#     new_room = {
-#         "course_id": course_id,
-#         "creator_id": creator_id,
-#         "room_name": room_name
-#     }
+    new_room = {
+        "course_id": course_id,
+        "creator_id": creator_id,
+        "room_name": room_name,
+        "size": 1
+    }
 
-#     try:
-#         post_response = supabase.table("rooms").insert(new_room).execute()
+    try:
+        post_response = supabase.table("rooms").insert(new_room).execute()
 
-#         if post_response.error:
-#             return jsonify({"error": post_response.error})
-    
-#         return jsonify(post_response.data)
-        
-#     except Exception as exception:
-#         return jsonify({"error": str(exception)})
+        if post_response.data:
+            return jsonify(post_response.data[0])
+        else:
+            return jsonify([])
+            
+    except Exception as exception:
+        return jsonify({"error": str(exception)})
 
 
 # upload a file inside a room
