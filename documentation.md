@@ -268,6 +268,7 @@ Returns object with `member` and `room` objects
 <br>
 
 **Return Values**
+**Use the `requester_key` to encrypt the room key and that will be what u use in the post request to accept a request**
 
 ```
 [
@@ -279,6 +280,25 @@ Returns object with `member` and `room` objects
         "room_id": string,
     }
 ]
+```
+
+<br>
+<br>
+
+
+**Accept request to join room**
+> **POST** `rooms/{room_id}/{request_id}`
+
+<br>
+
+**Request body**
+
+```
+{
+    "user_id": string,
+    "encrypted_key": string,
+}
+
 ```
 
 <br>
