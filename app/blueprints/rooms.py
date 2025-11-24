@@ -92,25 +92,61 @@ def getChat(room_id):
 
 
 # send a message
-# @bp.route('/<string:room_id>', methods=["POST"])
-# def sendMessage(room_id):
+@bp.route('/chat/<string:room_id>', methods=["POST"])
+def sendMessage(room_id):
 
-#     auth_header = request.headers.get("Authorization", "")
-#     token = auth_header.replace("Bearer ", "")
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
 
-#     if verify_token(token):
-#         print("success, will allow for endpoint")
-#     else:
-#         print("do not return data")
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
     
-#     data = request.get_json()
+    
+    data = request.get_json()
 
-#   update the room's size here as well
+    sender_id = data.get("sender_id")
+    content = data.get("content")
+    sender_name = data.get("sender_name")
 
+    new_message = {
+        "sender_id": sender_id,
+        "content": content,
+        "sender_name": sender_name,
+        "room_id": room_id
+    }
 
-#     try:
-#         new_message_query = supabase.table("messages").insert().execute()
-#     except Exception as exception:
+    try:
+        check_message_count = supabase.table("rooms").select("*").eq("id", room_id).execute()
+
+        check_user_message_count = supabase.table("users").select("*").eq("user_id", sender_id).execute()
+
+        if check_message_count.data and check_user_message_count.data:
+            # check to make sure havent reached max message count of room and
+            # check to make sure user hasnt exceeded max messages
+            room_message_count = check_message_count.data[0]["message_count"]
+            user_message_count = check_user_message_count.data[0]["total_messages"]
+            if room_message_count >= 300 or user_message_count >= 500:
+
+                return jsonify({"error": "max message count reached"}), 400
+
+            try:
+                new_message_response = supabase.table("messages").insert(new_message).execute()
+
+                if new_message_response.data:
+                    supabase.table("rooms").update({"message_count": room_message_count + 1}).eq("id", room_id).execute()
+                    supabase.table("users").update({"total_messages": user_message_count + 1}).eq("user_id", sender_id).execute()
+                    return jsonify(new_message_response.data[0])
+
+            except Exception as err:
+                return jsonify({"error": str(err)})
+        else:
+            return jsonify({"error": "room not found"})
+
+    except Exception as exception:
+        return jsonify({"error": str(exception)})
+
 
 # work on creating a room
 @bp.route('/new_room', methods=['POST'])
@@ -131,6 +167,7 @@ def createRoom():
     course_id = data.get("course_id")
     creator_id = data.get("creator_id")
     room_name = data.get("name")
+
     # role can be 'owner' or 'member'
     role = data.get("role")
     encrypted_key = data.get("encrypted_room_key")
@@ -150,7 +187,6 @@ def createRoom():
         "role": role,
         "encrypted_room_key": encrypted_key
     }
-
 
     try:
         # first make new entry in rooms table

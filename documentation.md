@@ -193,7 +193,9 @@ On success, returns an array of room objects
 {
     "course_id": string,
     "creator_id": string,
-    "name": string
+    "name": string,
+    "role": "owner",
+    "encrypted_room_key": string
 }
 ```
 
@@ -225,6 +227,28 @@ Returns object with `member` and `room` objects
 
 <br>
 <br>
+
+
+**Send a message**
+> **POST** `/rooms/chat/{room_id}`
+
+<br>
+
+**Request Body**
+**Note that user only can send max of `500` messages, and each room only can have `300` messages**
+
+
+```
+{
+    "sender_id": string,
+    "content": string,
+    "sender_name": string
+}
+```
+
+<br>
+<br>
+
 
 **Get chat from a room**
 > **GET** `/rooms/chat/{room_id}`
