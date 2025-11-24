@@ -131,19 +131,51 @@ def createRoom():
     course_id = data.get("course_id")
     creator_id = data.get("creator_id")
     room_name = data.get("name")
+    # role can be 'owner' or 'member'
+    role = data.get("role")
+    encrypted_key = data.get("encrypted_room_key")
+    room_id = str(uuid.uuid4())
 
     new_room = {
         "course_id": course_id,
         "creator_id": creator_id,
         "room_name": room_name,
-        "size": 1
+        "size": 1,
+        "id": room_id
     }
 
-    try:
-        post_response = supabase.table("rooms").insert(new_room).execute()
+    new_room_member = {
+        "room_id": room_id,
+        "user_id": creator_id,
+        "role": role,
+        "encrypted_room_key": encrypted_key
+    }
 
-        if post_response.data:
-            return jsonify(post_response.data[0])
+
+    try:
+        # first make new entry in rooms table
+        room_post_response = supabase.table("rooms").insert(new_room).execute()
+
+        if room_post_response.data:
+            try:
+                # now make new entry in room_members table
+                member_post_response = supabase.table("room_members").insert(new_room_member).execute()
+
+                if member_post_response.data:
+
+                    success_response = {
+                        "room": room_post_response.data[0],
+                        "member": member_post_response.data[0]
+                    }
+
+                    return jsonify(success_response)
+
+                else:
+                    return jsonify([])
+
+            except Exception as e:
+                return jsonify({"error": str(e)})
+
         else:
             return jsonify([])
             
@@ -239,12 +271,12 @@ def getFilesFromRoom(room_id):
 
 '''
     user A has privat and public key. 
-    They want to create a new room so they generate some room key, ROOM_KEY_AES, which uses A's public key to encrypt
+    They want to create a new room so they generate some room key, ROOM_KEY, which uses A's public key to encrypt
     And a new room of id 123 is created as well as new row in room_members with key column being encrypted room key for A
-    This encrypted key is then stored in room_members table as ROOM_KEY_AES_A or something
+    This encrypted key is then stored in room_members table as ROOM_KEY_A or something
 
     
-    If user A wants to send a message, it encrypts their message using public ROOM_KEY_AES
+    If user A wants to send a message, it encrypts their message using public ROOM_KEY
     and makes entry in messages table
 
     User B comes along and want to join room, in order to be able to join room, B needs to know the rooms public symmetric key

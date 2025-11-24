@@ -200,16 +200,25 @@ On success, returns an array of room objects
 <br>
 
 **Return Values**
-Returns object with `id` as the room_id, and size of 1
+Returns object with `member` and `room` objects
 
 ```  
 {
-    "course_id": string,
-    "created_at": string,
-    "creator_id": string,
-    "id": string,
-    "room_name": string,
-    "size": 1
+    "member": {
+        "encrypted_room_key": string
+        "joined_at": string
+        "role": string
+        "room_id": string
+        "user_id": string
+    },
+    "room": {
+        "course_id": string
+        "created_at": string
+        "creator_id": string
+        "id": string
+        "room_name": string
+        "size": 1
+    }
 }
 ```
 
