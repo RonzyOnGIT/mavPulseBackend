@@ -41,6 +41,7 @@ def getUserNotes(user_id):
         return jsonify({"error": str(exception)})
 
 
+# favorite a note
 @bp.post('/favorites')
 def favoriteNote():
     auth_header = request.headers.get("Authorization", "")
@@ -72,31 +73,30 @@ def favoriteNote():
         return jsonify({"error": str(exception)})
 
 
-# @bp.get('/favorites/<string:user_id>')
-# def getFavorites(user_id):
-#     auth_header = request.headers.get("Authorization", "")
-#     token = auth_header.replace("Bearer ", "")
+# get favoritted notes
+@bp.get('/favorites/<string:user_id>')
+def getFavorites(user_id):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
 
-#     if verify_token(token):
-#         print("success, will allow for endpoint")
-#     else:
-#         print("do not return data")
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
     
-#     try:
-#         notes_request = supabase.table("favorite_notes").select("*").eq("user_id", user_id).execute()
-
-#         # notes_request = (
-#         #     supabase
-#         #         .table("favorite_notes")
-#         #         .select("note_id, notes(*)")
-#         #         .eq("user_id", user_id)
-#         #         .execute()
-#         # )
+    try:
+        notes_request = (
+            supabase
+                .table("favorite_notes")
+                .select("note_id, notes(*)")
+                .eq("user_id", user_id)
+                .execute()
+        )
 
 
-#         if notes_request.data:
-#             return jsonify(notes_request.data)
-#         else:
-#             return jsonify([])
-#     except Exception as exception:
-#         return jsonify({"error": str(exception)})
+        if notes_request.data:
+            return jsonify(notes_request.data)
+        else:
+            return jsonify([])
+    except Exception as exception:
+        return jsonify({"error": str(exception)})

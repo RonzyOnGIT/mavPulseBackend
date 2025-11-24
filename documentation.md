@@ -424,3 +424,65 @@ Returns array of objects
     ...
 ]
 ```
+
+<br>
+<br>
+
+**Favorite a note**
+
+> **POST** `user/favorites`
+
+<br>
+
+**Request Body**
+
+```
+{
+   "user_id": "f3ece1c9-90e5-4825-a40e-060a7b7c1165",
+   "note_id": "f2881202-8aaf-401d-a2f4-f259069a7135"
+}
+```
+
+<br>
+
+**Return Values**
+
+```
+{
+    "favorite_id": string,
+    "note_id": string,
+    "user_id": string
+}
+```
+
+<br>
+<br>
+
+**Get favoritted notes**
+
+> **GET** `user/favorites/{user_id}`
+
+<br>
+
+**Return Values**
+
+```
+[
+    {
+        "note_id": string,
+        "notes": {
+            "bucket_path": string,
+            "course_name": string,
+            "created_at": string,
+            "file_path": string,
+            "is_public": boolean,
+            "note_id": string,
+            "room_id": string (can be null),
+            "title": string,
+            "user_id": string
+        }
+    },
+    ...
+]
+
+```
