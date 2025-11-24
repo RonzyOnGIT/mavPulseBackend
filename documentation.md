@@ -195,7 +195,7 @@ On success, returns an array of room objects
     "creator_id": string,
     "name": string,
     "role": "owner",
-    "encrypted_room_key": string
+    "encrypted_room_key": string,
 }
 ```
 
@@ -224,6 +224,62 @@ Returns object with `member` and `room` objects
 }
 ```
 
+<br>
+<br>
+
+**Request to join room**
+> **POST** `/rooms/{room_id}`
+
+<br>
+
+**Request Body**
+
+**`requester_key` is the user's public key**
+**You should make this call when user clicks on a room**
+```  
+{
+    "requester_key": requester_key,
+    "requester_name": requester_name,
+    "requester_id": requester_id       
+}
+```
+
+<br>
+
+**Return Values**
+**If user was granted access, then once user clicks on room, backend returns this**
+
+<br>
+
+```
+{
+    "course_id": string,
+    "creator_id": string,
+    "name": string,
+    "role": "owner",
+    "encrypted_room_key": string,
+    "joined_at": string
+}
+```
+
+**Get pending requests**
+>**GET** `rooms/{room_id}/{user_id}/`
+
+<br>
+
+**Return Values**
+
+```
+[
+    {
+        "request_id": string,
+        "requester_id": string,
+        "requester_key": string,
+        "requester_name": "owner",
+        "room_id": string,
+    }
+]
+```
 
 <br>
 <br>

@@ -148,7 +148,7 @@ def sendMessage(room_id):
         return jsonify({"error": str(exception)})
 
 
-# work on creating a room
+# create room
 @bp.route('/new_room', methods=['POST'])
 def createRoom():
     auth_header = request.headers.get("Authorization", "")
@@ -303,6 +303,149 @@ def getFilesFromRoom(room_id):
     except Exception as e:
         return jsonify({"error": str(e)})
 
+
+# user request to join room, new entry is made in table called requests
+@bp.post('/<string:room_id>')
+def joinRoomRequest(room_id):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
+
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
+
+    data = request.get_json()
+
+    # requester passes his public key
+    requester_key = data.get("user_key")
+    requester_name = data.get("username")
+    requester_id = data.get("user_id")
+
+    new_request = {
+        "requester_key": requester_key,
+        "requester_name": requester_name,
+        "requester_id": requester_id,
+        "room_id": room_id       
+    }
+
+    try: 
+        # first need to check if user is already a member, and or if they are pending request
+        try:
+            # first check to see if there is a request pending
+            pending_res = supabase.table("requests").select("*").eq("room_id", room_id).eq("requester_id", requester_id).execute()
+
+            if pending_res.data:
+                return jsonify({"error": "user already has pending request"})
+            
+            # now check to see if they are already member, to return the key to be able to decrypt
+            already_member_res = supabase.table("room_members").select("*").eq("user_id", requester_id).eq("room_id", room_id).execute()
+
+            # user was granted permission, return stuff, need to delete request entry now
+            if already_member_res.data:
+                del_response = supabase.table("requests").delete().eq("room_id", room_id).eq("requester_id", requester_id).execute()
+
+                if del_response.data:
+                    return jsonify(already_member_res.data[0])
+        except Exception as err:
+            return jsonify({"error": str(err)})
+
+        request_reponse = supabase.table("requests").insert(new_request).execute()
+
+        if request_reponse.data:
+            return jsonify(request_reponse.data)
+        else:
+            return jsonify([])
+            
+    except Exception as e:
+        return jsonify({"error": str(e)})    
+
+
+# returns pending request to join room
+@bp.get('/<string:room_id>/<string:user_id>')
+def checkPendingRequests(room_id, user_id):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
+
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
+
+    # first check to see if this person is the owner of the room
+    try: 
+        room_reponse = supabase.table("rooms").select("*").eq("id", room_id).execute()
+    
+        if room_reponse.data:
+            # check to see if user is owner
+            if room_reponse.data[0]["creator_id"] == user_id:
+                # they are the owner, good to check for requests
+                try:
+                    request_response = supabase.table("requests").select("*").eq("room_id", room_id)
+                    if request_response.data:
+                        return jsonify(request_response.data)
+                    else:
+                        return jsonify([])
+                except Exception as err:
+                    return jsonify({"error": str(err)})      
+            else:
+                return jsonify({"error": "user is not owner"})
+            
+    except Exception as e:
+        return jsonify({"error": str(e)})   
+
+
+@bp.post('/<string:room_id>/<string:request_id>') 
+def acceptRequest(room_id, request_id):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
+
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")
+
+    data = request.get_json()
+
+    user_id = data.get("user_id")
+    encrypted_key = data.get("encrypted_key")
+
+    try: 
+        room_reponse = supabase.table("rooms").select("*").eq("id", room_id).execute()
+    
+        if room_reponse.data:
+            # check to see if user is owner
+            if room_reponse.data[0]["creator_id"] == user_id:
+                # they are the owner, make new entry in room_members to allow new member
+                try:
+                    # look up the request to get the requester id to make new entry in room_members
+                    requests_response = supabase.table("requests").select("*").eq("request_id", request_id).execute()
+                    if requests_response.data:
+                        new_member = {
+                            "room_id": room_id,
+                            "user_id": requests_response.data[0]["requester_id"],
+                            "role": "member",
+                            "encrypted_room_key": encrypted_key
+                        }
+
+                        member_response = supabase.table("room_members").insert(new_member).execute()
+                        if member_response.data:
+                            return jsonify(member_response.data)
+
+                except Exception as e:
+                    return jsonify({"error": str(e)})
+                
+            else:
+                return jsonify({"error": "user is not owner"})
+            
+    except Exception as e:
+        return jsonify({"error": str(e)}) 
+
+    
+    
+
+
+    
 
 
 '''
