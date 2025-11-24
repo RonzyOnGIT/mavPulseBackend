@@ -85,7 +85,8 @@ def getCourses(department):
             newCourse = {
                 "course_code": course_code,
                 "course_name": course_name,
-                "course_name_backend": course["course_name"]
+                "course_name_backend": course["course_name"],
+                "course_id": course["course_id"]
             }
 
             modifiedCourses.append(newCourse)
