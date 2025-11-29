@@ -146,6 +146,25 @@ def sendMessage(room_id):
 
     except Exception as exception:
         return jsonify({"error": str(exception)})
+    
+@bp.delete('/chat/<string:message_id>')
+def deleteMessage(message_id: str):
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.replace("Bearer ", "")
+
+    if verify_token(token):
+        print("success, will allow for endpoint")
+    else:
+        print("do not return data")    
+
+    try:
+
+        del_response = supabase.table("messages").delete().eq("message_id", message_id).execute()
+
+        if del_response.data:
+            return jsonify(del_response.data[0])
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500
 
 
 # create room

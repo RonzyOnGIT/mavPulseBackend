@@ -392,11 +392,37 @@ On success, return array of messages, ordered from newest to oldest
 ]
 ```
 
+
 <br>
 
 **Optional parameters**:
 `limit` - only returns requested amount
 `offset` - offset from begginning
+
+<br>
+<br>
+
+**Delete a message**
+> **DELETE** `/rooms/chat/{message_id}
+
+<br>
+
+**For now, can only delete one message per request**
+**Return Values**
+
+On success
+
+```
+{
+    "content": string,
+    "created_at": string,
+    "message_id": string,
+    "room_id": string,
+    "sender_id": string,
+    "sender_name": string
+}
+
+```
 
 <br>
 <br>
