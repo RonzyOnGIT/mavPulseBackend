@@ -145,6 +145,45 @@ On success, returns array of all courses, in this example for Accounting (first 
 <br>
 <br>
 
+## Events
+
+<br>
+
+**Get all events**
+> **GET** `/events`
+
+
+<br>
+
+**Optional parameters**:
+`limit` - only returns requested amount
+`offset` - offset from begginning
+
+
+<br>
+
+**Return values**
+
+```
+[
+    {
+        "course_id": string (null for now),
+        "created_at": string,
+        "date": string,
+        "event_id": string,
+        "image_url": string,
+        "title": string,
+        "type": "upcoming" or "trending"
+    },
+    ...
+]
+
+```
+
+
+<br>
+<br>
+
 ## Rooms
 
 **Get all rooms for a course**

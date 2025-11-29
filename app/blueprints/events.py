@@ -36,8 +36,8 @@ def index():
 
         if events_response.data:
             return jsonify(events_response.data)
-        elif events_response.error:
-            return jsonify({"error": str(events_response.error)}), 500
+        else:
+            return jsonify([])
 
     except Exception as exception:
         return jsonify({"response": "500", "error": str(exception)}), 500
